@@ -2,7 +2,7 @@
 
 An interactive generative music and visual experience that creates unique, never-repeating ambient soundscapes paired with flowing procedural visuals. Open it and just... drift.
 
-**[Try it live →](https://drift-kappa.vercel.app)**
+**[Try it live →](https://drift-mocha.vercel.app)**
 
 ## What is this?
 

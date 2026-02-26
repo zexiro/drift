@@ -1,10 +1,11 @@
 <script>
   import DriftCanvas from './components/DriftCanvas.svelte';
   import InfoOverlay from './components/InfoOverlay.svelte';
+  import AboutOverlay from './components/AboutOverlay.svelte';
   import TransportBar from './components/TransportBar.svelte';
   import ScenePicker from './components/ScenePicker.svelte';
   import CaptureButton from './components/CaptureButton.svelte';
-  import { pokeUI, playing, showInfo } from './lib/stores/drift.js';
+  import { pokeUI, playing, showInfo, showAbout } from './lib/stores/drift.js';
 
   let canvasComponent;
 
@@ -32,12 +33,13 @@
 <main class="drift-app" onpointerdown={onPointerDown}>
   <DriftCanvas bind:this={canvasComponent} />
   <InfoOverlay />
+  <AboutOverlay />
   {#if !$showInfo}
     <TransportBar />
     <ScenePicker />
     <CaptureButton {getCanvas} />
     <footer class="codehawks-footer">
-      A <a href="https://www.codehawks.co.uk" target="_blank" rel="noopener noreferrer">CodeHawks</a> project
+      <button class="about-link" onclick={() => $showAbout = true}>About</button> · A <a href="https://www.codehawks.co.uk" target="_blank" rel="noopener noreferrer">CodeHawks</a> project
     </footer>
   {/if}
 </main>
@@ -62,6 +64,19 @@
     text-decoration: none;
   }
   .codehawks-footer a:hover {
+    color: var(--text);
+  }
+  .about-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--text-muted);
+    font-size: inherit;
+    font-family: inherit;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  .about-link:hover {
     color: var(--text);
   }
 </style>

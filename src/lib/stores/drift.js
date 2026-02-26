@@ -6,6 +6,7 @@ export const volume = writable(0.6);
 export const showUI = writable(true);
 export const showScenePicker = writable(false);
 export const showInfo = writable(true);
+export const showAbout = writable(false);
 
 let hideTimer = null;
 

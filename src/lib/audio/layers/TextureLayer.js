@@ -47,12 +47,12 @@ export function createTextureLayer(audioContext, destination, analyserNode) {
     filter.frequency.value = filterFreq;
     filter.Q.value = filterQ;
 
-    // Slow LFO on filter frequency
+    // Slow LFO on filter frequency — sweep limited to stay warm
     filterLfo = audioContext.createOscillator();
     filterLfo.type = 'sine';
     filterLfo.frequency.value = 0.02 + Math.random() * 0.03;
     const lfoGain = audioContext.createGain();
-    lfoGain.gain.value = filterFreq * 0.5;
+    lfoGain.gain.value = Math.min(filterFreq * 0.3, 300);
     filterLfo.connect(lfoGain);
     lfoGain.connect(filter.frequency);
     filterLfo.start();
@@ -65,15 +65,16 @@ export function createTextureLayer(audioContext, destination, analyserNode) {
     noiseGain.connect(output);
     noiseSource.start();
 
-    // Optional shimmer: high-frequency sines with heavy reverb send
+    // Optional shimmer: mid-high sines with heavy reverb send
+    // Capped at 2400 Hz to stay comfortable
     if (shimmer) {
       for (let i = 0; i < 3; i++) {
         const osc = audioContext.createOscillator();
         osc.type = 'sine';
-        osc.frequency.value = 2000 + Math.random() * 4000;
+        osc.frequency.value = 800 + Math.random() * 1600;
         osc.detune.value = Math.random() * 10 - 5;
         const g = audioContext.createGain();
-        g.gain.value = 0.015;
+        g.gain.value = 0.008;
         // Slow amplitude modulation
         const mod = audioContext.createOscillator();
         mod.type = 'sine';

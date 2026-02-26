@@ -1,6 +1,10 @@
 // Sparse evolving melody notes from current scale
 
-import { pickScaleNote } from '../scales.js';
+import { pickScaleNote, midiToFreq } from '../scales.js';
+
+// ~1047 Hz (C6) — comfortable ceiling for ambient melody
+const MAX_MELODY_FREQ = 1050;
+const MAX_MELODY_MIDI = 84; // C6
 
 export function createMelodicLayer(audioContext, destination, analyserNode) {
   const output = audioContext.createGain();
@@ -17,17 +21,21 @@ export function createMelodicLayer(audioContext, destination, analyserNode) {
 
     const { rootNote, scaleName, octaveLow = 3, octaveHigh = 5, noteGain = 0.08, waveform = 'sine' } = config;
 
-    // Prefer stepwise motion from last note
+    // Prefer stepwise motion from last note, clamped to comfortable range
     let note;
     if (lastMidi && Math.random() < 0.65) {
       const step = (Math.random() < 0.5 ? 1 : -1) * (Math.random() < 0.7 ? 1 : 2);
-      const targetMidi = lastMidi + step;
-      note = { midi: targetMidi, freq: 440 * Math.pow(2, (targetMidi - 69) / 12) };
+      let targetMidi = lastMidi + step;
+      // Clamp to max comfortable frequency
+      if (targetMidi > MAX_MELODY_MIDI) targetMidi = lastMidi - Math.abs(step);
+      note = { midi: targetMidi, freq: midiToFreq(targetMidi) };
     } else {
       note = pickScaleNote(rootNote, scaleName, octaveLow, octaveHigh);
     }
 
     if (!note) return;
+    // Hard clamp — skip notes above comfortable threshold
+    if (note.freq > MAX_MELODY_FREQ) return;
     lastMidi = note.midi;
 
     // Create note with ADSR envelope

@@ -35,7 +35,14 @@ export function getAudioEngine() {
 
     masterGain = ctx.createGain();
     masterGain.gain.value = 0.6;
-    masterGain.connect(ctx.destination);
+
+    // Global safety lowpass — gentle rolloff above 2kHz to keep everything warm
+    const safetyLP = ctx.createBiquadFilter();
+    safetyLP.type = 'lowpass';
+    safetyLP.frequency.value = 2200;
+    safetyLP.Q.value = 0.5; // Gentle slope, no resonance
+    masterGain.connect(safetyLP);
+    safetyLP.connect(ctx.destination);
 
     // Effect sends
     const reverbSend = ctx.createGain();

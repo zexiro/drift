@@ -31,15 +31,21 @@ export function createRhythmLayer(audioContext, destination, analyserNode) {
 
     const bp = audioContext.createBiquadFilter();
     bp.type = 'bandpass';
-    bp.frequency.value = filterFreq + Math.random() * 200;
+    bp.frequency.value = Math.min(filterFreq + Math.random() * 200, 1500);
     bp.Q.value = 2;
+
+    // Safety lowpass to remove any harsh high-end
+    const lp = audioContext.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 1800;
 
     const gain = audioContext.createGain();
     gain.gain.setValueAtTime(hitGain, time);
     gain.gain.exponentialRampToValueAtTime(0.001, time + decay);
 
     source.connect(bp);
-    bp.connect(gain);
+    bp.connect(lp);
+    lp.connect(gain);
     gain.connect(output);
     source.start(time);
     source.stop(time + decay + 0.05);

@@ -36,6 +36,9 @@
     <TransportBar />
     <ScenePicker />
     <CaptureButton {getCanvas} />
+    <footer class="codehawks-footer">
+      A <a href="https://www.codehawks.co.uk" target="_blank" rel="noopener noreferrer">CodeHawks</a> project
+    </footer>
   {/if}
 </main>
 
@@ -44,5 +47,21 @@
     width: 100%;
     height: 100%;
     position: relative;
+  }
+  .codehawks-footer {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.75rem;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    pointer-events: auto;
+    z-index: 5;
+  }
+  .codehawks-footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+  .codehawks-footer a:hover {
+    color: var(--text);
   }
 </style>
